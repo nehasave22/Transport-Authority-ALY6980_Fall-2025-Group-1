@@ -1,0 +1,13 @@
+{
+  "route_id": "Red-Line-Braintree",
+  "headsign_outbound": "Braintree",
+  "headsign_inbound": "JFK/UMass",
+  "stops": [
+    "JFK/UMass",
+    "North Quincy",
+    "Wollaston",
+    "Quincy Center",
+    "Quincy Adams",
+    "Braintree"
+  ]
+}

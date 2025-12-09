@@ -1,0 +1,8 @@
+mcp>=0.9.0
+
+fastapi>=0.112
+uvicorn>=0.30
+requests>=2.31
+python-dotenv>=1.0
+pydantic>=2.7
+mcp>=0.9.0

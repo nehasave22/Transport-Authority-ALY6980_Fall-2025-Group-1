@@ -1,0 +1,26 @@
+{
+  "route_id": "Green-E",
+  "headsign_outbound": "Heath St",
+  "headsign_inbound": "Lechmere",
+  "stops": [
+    "Heath St",
+    "Back of the Hill",
+    "Riverway",
+    "Mission Park",
+    "Fenwood Rd",
+    "Brigham Circle",
+    "Longwood Medical Area",
+    "Museum of Fine Arts",
+    "Northeastern University",
+    "Symphony",
+    "Prudential",
+    "Copley",
+    "Arlington",
+    "Boylston",
+    "Park Street",
+    "Government Center",
+    "Science Park/West End",
+    "Lechmere",
+    "Union Square"
+  ]
+}

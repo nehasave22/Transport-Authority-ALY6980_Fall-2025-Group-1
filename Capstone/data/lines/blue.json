@@ -1,0 +1,19 @@
+{
+  "route_id": "Blue-Line",
+  "headsign_outbound": "Wonderland",
+  "headsign_inbound": "Bowdoin",
+  "stops": [
+    "Wonderland",
+    "Revere Beach",
+    "Beachmont",
+    "Suffolk Downs",
+    "Orient Heights",
+    "Wood Island",
+    "Airport",
+    "Maverick",
+    "Aquarium",
+    "State",
+    "Government Center",
+    "Bowdoin"
+  ]
+}

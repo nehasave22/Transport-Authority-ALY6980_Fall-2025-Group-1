@@ -1,0 +1,11 @@
+{
+  "mcpServers": {
+    "mbta-transit": {
+      "command": "python",
+      "args": ["/home/ubuntu/mbta-agent/mcp_server.py"],
+      "env": {
+        "MBTA_API_KEY": "your-mbta-api-key-here"
+      }
+    }
+  }
+}

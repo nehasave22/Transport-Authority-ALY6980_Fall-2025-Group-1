@@ -1,0 +1,57 @@
+{
+  "default_walk_minutes": 3,
+  "pairs": [
+    [
+      "Park Street",
+      "Downtown Crossing"
+    ],
+    [
+      "Park Street",
+      "Government Center"
+    ],
+    [
+      "Park Street",
+      "Boylston"
+    ],
+    [
+      "Government Center",
+      "State"
+    ],
+    [
+      "Government Center",
+      "Park Street"
+    ],
+    [
+      "State",
+      "Downtown Crossing"
+    ],
+    [
+      "North Station",
+      "Haymarket"
+    ],
+    [
+      "South Station",
+      "Courthouse"
+    ],
+    [
+      "South Station",
+      "Red Line"
+    ],
+    [
+      "Kenmore",
+      "Hynes Convention Center"
+    ],
+    [
+      "Copley",
+      "Arlington"
+    ],
+    [
+      "Copley",
+      "Prudential"
+    ],
+    [
+      "Back Bay",
+      "Copley"
+    ]
+  ]
+}

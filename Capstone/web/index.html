@@ -1,0 +1,164 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full bg-gray-50">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>MBTA Assistant</title>
+  <link rel="icon" href="/favicon.ico">
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    .brand { background: linear-gradient(90deg,#0ea5e9,#22c55e); }
+    .card { background:#fff; border:1px solid #e5e7eb; border-radius:16px; }
+    .btn  { border-radius:12px; font-weight:600; }
+    .btn-primary { background:#0ea5e9; color:#fff; }
+    .btn-primary:hover { filter: brightness(0.95); }
+    .btn-secondary { background:#f3f4f6; }
+    .pill { border:1px solid #e5e7eb; border-radius:999px; padding:.25rem .6rem; font-size:.8rem; }
+    .spinner { width:18px; height:18px; border:2px solid #e5e7eb; border-top-color:#0ea5e9; border-radius:50%; animation: spin .7s linear infinite; display:inline-block; vertical-align:middle; }
+    @keyframes spin { to { transform: rotate(360deg);} }
+    pre.wrap { white-space: pre-wrap; }
+  </style>
+</head>
+<body class="h-full text-gray-900">
+<header class="brand text-white">
+  <div class="mx-auto max-w-5xl px-4 py-5 flex items-center justify-between">
+    <div class="flex items-center gap-3">
+      <svg width="28" height="28" viewBox="0 0 24 24" fill="none"><path d="M3 6h18M3 12h18M3 18h18" stroke="white" stroke-width="2" stroke-linecap="round"/></svg>
+      <h1 class="text-xl md:text-2xl font-bold">MBTA Assistant</h1>
+    </div>
+    <div class="text-sm opacity-90">v1.0 • Multi-Agent</div>
+  </div>
+</header>
+
+<main class="mx-auto max-w-5xl px-4 py-6">
+  <div class="mb-5 text-sm text-gray-600">
+    Try: <span class="pill">alerts for <b>Green-D</b></span> <span class="pill">directions from Kenmore to Government Center</span>
+  </div>
+
+  <div class="grid grid-cols-1 lg:grid-cols-3 gap-6">
+    <section class="lg:col-span-1 space-y-6">
+      <div class="card p-4">
+        <h2 class="font-semibold text-lg mb-3">Alerts</h2>
+        <label class="block text-sm mb-1">Route</label>
+        <select id="route" class="w-full border rounded-md px-3 py-2">
+          <option value="">All Routes</option>
+          <option>Green-B</option><option>Green-C</option><option selected>Green-D</option><option>Green-E</option>
+          <option>Red</option><option>Orange</option><option>Blue</option>
+        </select>
+        <button id="btnAlerts" class="btn btn-primary w-full mt-3 py-2">Get Alerts</button>
+        <p class="text-xs text-gray-500 mt-2">Orchestrator → alerts-agent</p>
+      </div>
+
+      <div class="card p-4">
+        <h2 class="font-semibold text-lg mb-3">Directions</h2>
+        <label class="block text-sm mb-1">From</label>
+        <input id="from" class="w-full border rounded-md px-3 py-2 mb-2" placeholder="Kenmore" />
+        <label class="block text-sm mb-1">To</label>
+        <input id="to" class="w-full border rounded-md px-3 py-2" placeholder="Government Center" />
+        <button id="btnDirections" class="btn btn-primary w-full mt-3 py-2">Plan Route</button>
+        <p class="text-xs text-gray-500 mt-2">Orchestrator → stopfinder → planner</p>
+      </div>
+
+      <div class="card p-4">
+        <h2 class="font-semibold text-lg mb-3">Ask anything</h2>
+        <textarea id="chatInput" class="w-full border rounded-md px-3 py-2 h-24" placeholder="e.g., alerts for Green-D"></textarea>
+        <div class="flex gap-2 mt-3">
+          <button id="btnSend" class="btn btn-secondary px-4 py-2">Send</button>
+          <button id="btnClear" class="btn btn-secondary px-4 py-2">Clear</button>
+        </div>
+        <p class="text-xs text-gray-500 mt-2">Sends to /chat. Intent auto-guessed.</p>
+      </div>
+    </section>
+
+    <section class="lg:col-span-2 space-y-4">
+      <div class="card p-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-semibold text-lg">Results</h2>
+          <div id="status" class="text-xs text-gray-500"></div>
+        </div>
+        <div id="results" class="mt-3 space-y-3"></div>
+      </div>
+    </section>
+  </div>
+</main>
+
+<script>
+const API_BASE = '';
+
+const $ = (sel) => document.querySelector(sel);
+const results = $('#results');
+const statusEl = $('#status');
+
+function setStatus(msg, spinning=false){ statusEl.innerHTML = spinning ? `<span class="spinner"></span> ${msg}` : msg; }
+function addCard(title, body, isError=false){
+  const div = document.createElement('div');
+  div.className = 'p-4 border rounded-xl ' + (isError ? 'bg-red-50 border-red-200' : 'bg-gray-50 border-gray-200');
+  div.innerHTML = `<div class="font-semibold mb-1">${title}</div><pre class="wrap text-sm">${body}</pre>`;
+  results.prepend(div);
+}
+function lastAssistantText(messages){
+  for (let i = messages.length - 1; i >= 0; i--) {
+    if (messages[i].role === 'assistant') return messages[i].content || '';
+  }
+  return '';
+}
+async function postChat(userText, intent=null, history=[]){
+  const payload = { messages:[...history,{ role:'user', content:userText }], intent:intent };
+  const ctrl = new AbortController();
+  const t = setTimeout(() => ctrl.abort(), 12000);
+  const res = await fetch(`${API_BASE}/chat`, {
+    method: 'POST', headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify(payload), signal: ctrl.signal
+  });
+  clearTimeout(t);
+  if (!res.ok) throw new Error(`HTTP ${res.status}`);
+  return res.json();
+}
+
+$('#btnAlerts').addEventListener('click', async () => {
+  const route = $('#route').value.trim();
+  const text = route ? `alerts for ${route}` : 'alerts';
+  setStatus('Fetching alerts…', true);
+  try {
+    const data = await postChat(text, 'alerts');
+    const msg = lastAssistantText(data.messages) || 'No alerts.';
+    addCard(route ? `Alerts — ${route}` : 'Alerts — All', msg);
+    setStatus('Done');
+  } catch (e) { addCard('Alerts Error', String(e), true); setStatus('Error'); }
+});
+
+$('#btnDirections').addEventListener('click', async () => {
+  const from = $('#from').value.trim();
+  const to = $('#to').value.trim();
+  if (!from || !to) { addCard('Validation', 'Please fill both origin and destination.', true); return; }
+  const text = `directions from ${from} to ${to}`;
+  setStatus('Planning route…', true);
+  try {
+    const data = await postChat(text, 'directions');
+    const msg = lastAssistantText(data.messages) || 'No route.';
+    addCard(`Directions — ${from} → ${to}`, msg);
+    setStatus('Done');
+  } catch (e) { addCard('Directions Error', String(e), true); setStatus('Error'); }
+});
+
+$('#btnSend').addEventListener('click', async () => {
+  const text = $('#chatInput').value.trim();
+  if (!text) return;
+  setStatus('Thinking…', true);
+  try {
+    const data = await postChat(text, null);
+    const msg = lastAssistantText(data.messages) || 'No response.';
+    addCard('Assistant', msg);
+    setStatus('Done');
+  } catch (e) { addCard('Chat Error', String(e), true); setStatus('Error'); }
+});
+
+$('#btnClear').addEventListener('click', () => { results.innerHTML = ''; setStatus('Cleared'); });
+
+window.addEventListener('load', async () => {
+  try { const res = await fetch(`${API_BASE}/healthz`, { cache: 'no-store' }); setStatus(res.ok ? 'Ready' : 'Backend not healthy'); }
+  catch { setStatus('Backend unreachable'); }
+});
+</script>
+</body>
+</html>

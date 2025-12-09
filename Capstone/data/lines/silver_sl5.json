@@ -1,0 +1,17 @@
+{
+  "route_id": "SL5",
+  "headsign_outbound": "Dudley/Nubian",
+  "headsign_inbound": "Downtown Crossing",
+  "stops": [
+    "Downtown Crossing",
+    "Temple Place",
+    "Boylston",
+    "Arlington",
+    "Copley",
+    "Back Bay",
+    "E Berkeley St",
+    "Newton St",
+    "W Dedham St",
+    "Dudley/Nubian"
+  ]
+}

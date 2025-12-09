@@ -1,0 +1,14 @@
+{
+  "route_id": "SL4",
+  "headsign_outbound": "Dudley/Nubian",
+  "headsign_inbound": "South Station",
+  "stops": [
+    "South Station",
+    "Tufts Medical Center",
+    "Herald St",
+    "E Berkeley St",
+    "Newton St",
+    "W Dedham St",
+    "Dudley/Nubian"
+  ]
+}

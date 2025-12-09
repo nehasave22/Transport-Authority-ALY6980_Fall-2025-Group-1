@@ -1,0 +1,12 @@
+{
+  "route_id": "SL3",
+  "headsign_outbound": "Chelsea",
+  "headsign_inbound": "South Station",
+  "stops": [
+    "South Station",
+    "Courthouse",
+    "World Trade Center",
+    "Airport/Chelsea",
+    "Chelsea"
+  ]
+}

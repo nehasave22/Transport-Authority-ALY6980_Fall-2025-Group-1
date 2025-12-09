@@ -1,0 +1,15 @@
+{
+  "route_id": "SL1",
+  "headsign_outbound": "Logan Airport Terminals",
+  "headsign_inbound": "South Station",
+  "stops": [
+    "South Station",
+    "Courthouse",
+    "World Trade Center",
+    "Silver Line Way",
+    "Terminal A",
+    "Terminal B",
+    "Terminal C",
+    "Terminal E"
+  ]
+}

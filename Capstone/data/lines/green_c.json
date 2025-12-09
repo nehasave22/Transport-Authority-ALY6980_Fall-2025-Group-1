@@ -1,0 +1,30 @@
+{
+  "route_id": "Green-C",
+  "headsign_outbound": "Cleveland Circle",
+  "headsign_inbound": "Lechmere",
+  "stops": [
+    "Cleveland Circle",
+    "Englewood Ave",
+    "Dean Rd",
+    "Tappan St",
+    "Washington Sq",
+    "Fairbanks St",
+    "Brandon Hall",
+    "Summit Ave",
+    "Coolidge Corner",
+    "Saint Paul St (C)",
+    "Kent St",
+    "Hawes St",
+    "Saint Marys St",
+    "Kenmore",
+    "Hynes Convention Center",
+    "Copley",
+    "Arlington",
+    "Boylston",
+    "Park Street",
+    "Government Center",
+    "Science Park/West End",
+    "Lechmere",
+    "Union Square"
+  ]
+}

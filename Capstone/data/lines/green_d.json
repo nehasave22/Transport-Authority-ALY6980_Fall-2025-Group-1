@@ -1,0 +1,30 @@
+{
+  "route_id": "Green-D",
+  "headsign_outbound": "Riverside",
+  "headsign_inbound": "Lechmere",
+  "stops": [
+    "Riverside",
+    "Woodland",
+    "Waban",
+    "Eliot",
+    "Newton Highlands",
+    "Newton Centre",
+    "Chestnut Hill",
+    "Reservoir",
+    "Beaconsfield",
+    "Brookline Hills",
+    "Brookline Village",
+    "Longwood",
+    "Fenway",
+    "Kenmore",
+    "Hynes Convention Center",
+    "Copley",
+    "Arlington",
+    "Boylston",
+    "Park Street",
+    "Government Center",
+    "Science Park/West End",
+    "Lechmere",
+    "Union Square"
+  ]
+}

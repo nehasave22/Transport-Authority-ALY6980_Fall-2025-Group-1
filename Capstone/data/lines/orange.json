@@ -1,0 +1,27 @@
+{
+  "route_id": "Orange-Line",
+  "headsign_outbound": "Oak Grove",
+  "headsign_inbound": "Forest Hills",
+  "stops": [
+    "Oak Grove",
+    "Malden Center",
+    "Wellington",
+    "Assembly",
+    "Sullivan Square",
+    "Community College",
+    "North Station",
+    "Haymarket",
+    "State",
+    "Downtown Crossing",
+    "Chinatown",
+    "Tufts Medical Center",
+    "Back Bay",
+    "Massachusetts Ave",
+    "Ruggles",
+    "Roxbury Crossing",
+    "Jackson Square",
+    "Stony Brook",
+    "Green Street",
+    "Forest Hills"
+  ]
+}

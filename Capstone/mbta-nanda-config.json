@@ -1,0 +1,11 @@
+[
+  {
+    "agent_id": "mbta-transit-agent",
+    "agent_name": "MBTA Transit Agent",
+    "domain": "transportation and transit",
+    "specialization": "Boston MBTA real-time transit information expert",
+    "description": "I provide real-time MBTA transit information including alerts, routes, schedules, trip planning, and predictions for the Boston area transit system. I can help you navigate the T with current service updates.",
+    "capabilities": "transit alerts,route information,trip planning,real-time predictions,stop finding,service updates,MBTA expertise",
+    "port": 16000
+  }
+]

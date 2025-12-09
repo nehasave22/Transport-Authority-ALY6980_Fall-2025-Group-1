@@ -1,0 +1,12 @@
+{
+  "route_id": "Red-Line-Ashmont",
+  "headsign_outbound": "Ashmont",
+  "headsign_inbound": "JFK/UMass",
+  "stops": [
+    "JFK/UMass",
+    "Savin Hill",
+    "Fields Corner",
+    "Shawmut",
+    "Ashmont"
+  ]
+}

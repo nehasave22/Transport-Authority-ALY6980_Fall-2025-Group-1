@@ -1,0 +1,12 @@
+{
+  "route_id": "SL2",
+  "headsign_outbound": "Design Center",
+  "headsign_inbound": "South Station",
+  "stops": [
+    "South Station",
+    "Courthouse",
+    "World Trade Center",
+    "Dry Dock Ave",
+    "Design Center"
+  ]
+}
