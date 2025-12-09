@@ -257,7 +257,4 @@ linode-cli firewalls delete <FIREWALL_ID>
 * Tested on **Linode Ubuntu 22.04 (g6-standard-1)**.
 
 
-🔹 **A deployment diagram banner for the README**
-🔹 **A CI/CD pipeline (GitHub Actions) for automated deployment**
 
-Just say: **"add CI/CD"** or **"add wiki."**
