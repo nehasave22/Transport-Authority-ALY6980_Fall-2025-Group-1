@@ -1,0 +1,181 @@
+services:
+  farm-server:
+    build:
+      context: ../../..
+      dockerfile: coffeeAGNTCY/coffee_agents/corto/docker/Dockerfile.farm
+    image: ghcr.io/agntcy/coffee-agntcy/corto-farm:latest
+    container_name: farm-server
+    environment:
+      - FARM_AGENT_HOST=farm-server
+      - FARM_AGENT_PORT=9999
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT:-}
+      - AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT:-}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY:-}
+      - AZURE_OPENAI_API_VERSION=${AZURE_OPENAI_API_VERSION:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_ENDPOINT=${OPENAI_ENDPOINT:-}
+      - OPENAI_MODEL_NAME=${OPENAI_MODEL_NAME:-}
+      - LLM_PROVIDER=${LLM_PROVIDER}
+      - DEFAULT_MESSAGE_TRANSPORT=${DEFAULT_MESSAGE_TRANSPORT:-SLIM}
+      - TRANSPORT_SERVER_ENDPOINT=${TRANSPORT_SERVER_ENDPOINT:-http://slim:46357}
+      - OTLP_HTTP_ENDPOINT=${OTLP_HTTP_ENDPOINT:-http://otel-collector:4318}
+      - LLM_STREAMING=${LLM_STREAMING:-}
+    ports:
+      - "9999:9999"
+
+  nats:
+    image: nats:latest
+    container_name: nats-corto
+    ports:
+      - "4222:4222"
+      - "4223:4223"
+      - "6222:6222"
+      - "8222:8222"
+
+  slim:
+    image: ghcr.io/agntcy/slim:0.6.1
+    container_name: slim-corto
+    ports:
+      - "46357:46357"
+    environment:
+      - PASSWORD=${SLIM_GATEWAY_PASSWORD:-dummy_password}
+      - CONFIG_PATH=/config.yaml
+    volumes:
+      - ./config/docker/slim/server-config.yaml:/config.yaml
+    command: ["/slim", "--config", "/config.yaml"]
+
+  # Exchange server App (farm client)
+  exchange-server:
+    build:
+      context: ../../..
+      dockerfile: coffeeAGNTCY/coffee_agents/corto/docker/Dockerfile.exchange
+    image: ghcr.io/agntcy/coffee-agntcy/corto-exchange:latest
+    container_name: exchange-server-corto
+    environment:
+      - FARM_AGENT_HOST=farm-server
+      - FARM_AGENT_PORT=9999
+      - AZURE_OPENAI_ENDPOINT=${AZURE_OPENAI_ENDPOINT:-}
+      - AZURE_OPENAI_DEPLOYMENT=${AZURE_OPENAI_DEPLOYMENT:-}
+      - AZURE_OPENAI_API_KEY=${AZURE_OPENAI_API_KEY:-}
+      - AZURE_OPENAI_API_VERSION=${AZURE_OPENAI_API_VERSION:-}
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OPENAI_ENDPOINT=${OPENAI_ENDPOINT:-}
+      - OPENAI_MODEL_NAME=${OPENAI_MODEL_NAME:-}
+      - LLM_PROVIDER=${LLM_PROVIDER}
+      - DEFAULT_MESSAGE_TRANSPORT=${DEFAULT_MESSAGE_TRANSPORT:-SLIM}
+      - TRANSPORT_SERVER_ENDPOINT=${TRANSPORT_SERVER_ENDPOINT:-http://slim:46357}
+      - OTLP_HTTP_ENDPOINT=${OTLP_HTTP_ENDPOINT:-http://otel-collector:4318}
+      - LLM_STREAMING=${LLM_STREAMING:-}
+    depends_on:
+      - farm-server
+    ports:
+      - "8000:8000"
+    volumes:
+      # Mount the repo's .git to allow git-based version fallback inside the container for local dev
+      - ../../../.git:/app/.git:ro
+
+  ui:
+    build:
+      context: ../../..
+      dockerfile: coffeeAGNTCY/coffee_agents/corto/docker/Dockerfile.ui
+    image: ghcr.io/agntcy/coffee-agntcy/corto-ui:latest
+    container_name: ui-corto
+    environment:
+      - VITE_EXCHANGE_APP_API_URL=http://127.0.0.1:8000
+    depends_on:
+      - exchange-server
+    ports:
+      - "3000:3000"
+
+  clickhouse-server:
+    platform: linux/amd64
+    image: clickhouse/clickhouse-server
+    container_name: clickhouse-server-corto
+    ports:
+      - "9000:9000"
+      - "8123:8123"
+    environment:
+      CLICKHOUSE_USER: admin
+      CLICKHOUSE_PASSWORD: admin
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144
+    healthcheck:
+      test:
+        [
+          "CMD",
+          "wget",
+          "--no-verbose",
+          "--tries=1",
+          "--spider",
+          "http://localhost:8123/ping",
+        ]
+      interval: 5s
+      timeout: 3s
+      retries: 5
+      start_period: 10s
+
+  otel-collector:
+    image: otel/opentelemetry-collector-contrib:latest
+    container_name: otel-collector-corto
+    restart: unless-stopped
+    ports:
+      - "4317:4317"
+      - "4318:4318"
+    volumes:
+      - ./config/docker/otel/otel-collector-config.yaml:/etc/otel-collector-config.yaml
+    command: ["--config", "/etc/otel-collector-config.yaml"]
+    depends_on:
+      clickhouse-server:
+        condition: service_healthy
+
+  grafana:
+    image: grafana/grafana
+    container_name: grafana-corto
+    ports:
+      - "3001:3000"
+    environment:
+      - GF_INSTALL_PLUGINS=grafana-clickhouse-datasource
+      - GF_SECURITY_ADMIN_PASSWORD=admin
+      - GF_USERS_ALLOW_SIGN_UP=false
+    depends_on:
+      clickhouse-server:
+        condition: service_healthy
+
+  mce-api-layer:
+    image: ghcr.io/agntcy/obs-api:0.1.1
+    ports:
+      - "8080:8080"
+    environment:
+      - CLICKHOUSE_URL=clickhouse-server
+      - CLICKHOUSE_PORT=9000
+      - CLICKHOUSE_USER=admin
+      - CLICKHOUSE_PASS=admin
+      - CLICKHOUSE_DB=default
+      - SERVER_PORT=8080
+      - PORT=8080
+    depends_on:
+      clickhouse-server:
+        condition: service_healthy
+      otel-collector:
+        condition: service_started
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8080/keepAlive"]
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 30s
+
+  metrics-computation-engine:
+    image: ghcr.io/agntcy/mce:1.2.1
+    ports:
+      - "8001:8000"
+    environment:
+      - API_BASE_URL=http://mce-api-layer:8080
+      - LLM_BASE_MODEL_URL=${AZURE_OPENAI_ENDPOINT:-${OPENAI_ENDPOINT}}
+      - LLM_MODEL_NAME=${AZURE_OPENAI_DEPLOYMENT:-${OPENAI_MODEL_NAME}}
+      - LLM_API_KEY=${AZURE_OPENAI_API_KEY:-${OPENAI_API_KEY}}
+    depends_on:
+      mce-api-layer:
+        condition: service_healthy
