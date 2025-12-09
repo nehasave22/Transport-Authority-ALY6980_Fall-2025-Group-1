@@ -30,7 +30,6 @@ linode-deploy-mbta-agent-only.sh
 
 # 📐 Architecture
 
-```mermaid
 flowchart LR
     subgraph Linode VM (Ubuntu 22.04)
         A1[Alerts Agent :8781]
@@ -49,9 +48,7 @@ flowchart LR
     
     RA[NANDA Registry] <--> W2
     W2 --> W1
-```
 
----
 
 # 🧰 1. Purpose
 
