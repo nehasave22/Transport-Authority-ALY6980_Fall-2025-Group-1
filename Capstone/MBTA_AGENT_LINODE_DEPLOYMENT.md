@@ -50,7 +50,6 @@ flowchart LR
 
     RA[NANDA Registry] <--> W2
     W2 --> W1
-
 # 🧰 1. Purpose
 
 This script deploys the complete **MBTA Multi-Agent Stack** onto a single Linode instance and connects it to an existing NANDA Registry.
