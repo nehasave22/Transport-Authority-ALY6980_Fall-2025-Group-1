@@ -28,8 +28,11 @@ linode-deploy-mbta-agent-only.sh
 
 ---
 
-## 🏗️ Architecture
 
+```md
+## Architecture
+
+```mermaid
 flowchart LR
 
     subgraph Linode_VM_Ubuntu_2204
