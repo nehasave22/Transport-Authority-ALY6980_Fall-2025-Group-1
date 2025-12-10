@@ -1,9 +1,11 @@
+Here is your **entire README.md rewritten cleanly**, with **correct Mermaid formatting**, **no broken code fences**, **no nesting mistakes**, and **fully GitHub-compatible**.
+Just **copy–paste this whole file as-is** into your README.md.
 
+---
 
 # 🚇 **MBTA Multi-Agent Deployment on Linode**
 
 *Automated deployment of Alerts, Planner, StopFinder, Chat Backend & NANDA A2A Wrapper*
-
 
 ![Linode](https://img.shields.io/badge/Cloud-Linode-00A95C?style=flat\&logo=linode\&logoColor=white)
 ![Python](https://img.shields.io/badge/Python-3.10+-blue?style=flat\&logo=python)
@@ -28,9 +30,7 @@ linode-deploy-mbta-agent-only.sh
 
 ---
 
-
-```md
-## Architecture
+## 🏗️ Architecture
 
 ```mermaid
 flowchart LR
@@ -52,6 +52,9 @@ flowchart LR
 
     Registry[NANDA Registry] <--> W2
     W2 --> W1
+```
+
+---
 
 # 🧰 1. Purpose
 
@@ -176,11 +179,15 @@ bash linode-deploy-mbta-agent-only.sh \
 
 The script performs **full server provisioning**:
 
+---
+
 ### 🧭 Local Machine
 
 * Validates inputs
 * Packages project into `.tar.gz`
 * Excludes unnecessary folders (`.git`, `.venv`, caches, `.env`)
+
+---
 
 ### ☁️ Linode Setup
 
@@ -198,19 +205,21 @@ The script performs **full server provisioning**:
 * Creates Linode instance
 * Uploads project via SCP
 
+---
+
 ### 🖥️ Remote Server Setup
 
 On the server:
 
 * Installs Python, Git, Supervisor
-* Creates ubuntu user
+* Creates `ubuntu` user
 * Extracts project to:
 
 ```
 /home/ubuntu/mbta-agent
 ```
 
-* Sets up **Python virtual environment**
+* Sets up Python virtual environment
 * Installs dependencies
 * Installs NANDA NEST
 * Configures Supervisor programs:
@@ -223,6 +232,8 @@ On the server:
 | Chat Backend     | 8787  |
 | A2A Adapter      | 6000  |
 | NANDA Wrapper    | 16000 |
+
+---
 
 ### 🎉 Final Output Includes:
 
@@ -248,9 +259,11 @@ NANDA Wrapper:     http://<IP>:16000/a2a
 ```bash
 curl http://<PUBLIC_IP>:8787/chat \
   -X POST \
-  -H 'Content-Type: application/json' \
+  -H "Content-Type: application/json" \
   -d '{"messages":[{"role":"user","content":"routes"}]}'
 ```
+
+---
 
 ### Test A2A Adapter
 
