@@ -1,5 +1,4 @@
-Here is your **entire README.md rewritten cleanly**, with **correct Mermaid formatting**, **no broken code fences**, **no nesting mistakes**, and **fully GitHub-compatible**.
-Just **copy–paste this whole file as-is** into your README.md.
+
 
 ---
 
