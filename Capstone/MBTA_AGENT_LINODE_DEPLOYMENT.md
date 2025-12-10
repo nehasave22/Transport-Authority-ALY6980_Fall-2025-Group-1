@@ -28,33 +28,7 @@ Everything is deployed and configured automatically via:
 linode-deploy-mbta-agent-only.sh
 ```
 
----
 
-## 🏗️ Architecture
-
-```mermaid
-flowchart LR
-
-    subgraph Linode_VM_Ubuntu_2204
-        A1[Alerts Agent (8781)]
-        A2[Planner Agent (8782)]
-        A3[Stop Finder (8783)]
-        C1[Chat Backend (8787)]
-        W1[NANDA A2A Adapter (6000)]
-        W2[NANDA Wrapper (16000)]
-        S[Supervisor]
-    end
-
-    User((User)) --> C1
-    C1 --> A1
-    C1 --> A2
-    C1 --> A3
-
-    Registry[NANDA Registry] <--> W2
-    W2 --> W1
-```
-
----
 
 # 🧰 1. Purpose
 
